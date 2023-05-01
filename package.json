@@ -1,6 +1,6 @@
 {
   "name": "@vacantthinker/util_dexie_js",
-  "version": "0.0.1",
+  "version": "0.0.1-beta3",
   "description": " util dexie js",
   "main": "index.js",
   "repository": {

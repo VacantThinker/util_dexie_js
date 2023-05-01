@@ -247,8 +247,9 @@ function geneUtilDexieJs(
   ${entityName}FindWhereLike: async (options) => {
     const searchKey = String(Object.keys(options)[0]);
     const searchVal = String(Object.values(options)[0]);
+    let regExp = new RegExp(searchVal, "i");
     return ${dbTableString}filter((config) =>
-      config[searchKey].includes(searchVal),
+      regExp.test(config[searchKey])
     ).toArray()
   },
 
