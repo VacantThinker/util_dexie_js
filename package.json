@@ -1,0 +1,18 @@
+{
+  "name": "@vacantthinker/util_dexie_js",
+  "version": "0.0.1",
+  "description": " util dexie js",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VacantThinker/util_dexie_js.git"
+  },
+  "author": {
+    "name": "VacantThinker"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/VacantThinker/util_dexie_js/issues"
+  },
+  "homepage": "https://github.com/VacantThinker/util_dexie_js#readme"
+}
