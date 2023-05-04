@@ -184,6 +184,16 @@ function geneUtilDexieJs(
     }
   },
   /**
+   * ({id:1});
+   * @param options {Object:${entityUpdateString}}
+   * @returns {Promise<boolean>}
+   */
+  ${entityName}DeleteAll: async (options) => {
+    const searchKey = String(Object.keys(options)[0]);
+    const searchVal = String(Object.values(options)[0]);
+    return ${dbTableString}where(searchKey).equals(searchVal).delete()
+  },
+  /**
    * ({name: 'jessica'}, {id: 1})
    * @param ${entityName}New {Object:${entityUpdateString}}
    * @param options {Object:${entityUpdateString}}
@@ -248,8 +258,8 @@ function geneUtilDexieJs(
     const searchKey = String(Object.keys(options)[0]);
     const searchVal = String(Object.values(options)[0]);
     let regExp = new RegExp(searchVal, "i");
-    return ${dbTableString}filter((config) =>
-      regExp.test(config[searchKey])
+    return ${dbTableString}filter((item) =>
+      regExp.test(item[searchKey])
     ).toArray()
   },
 
@@ -327,12 +337,12 @@ function extracted(pathDir, text) {
   console.log(`text=\n`, text, `\n`);
 }
 
-function handleJs(dbname, reduce, pathDirGeneFile) {
+function handleJs(dbname, dbversion, reduce, pathDirGeneFile) {
   const text =
     `'use strict';
 
 export const db = new Dexie('${dbname}');
-db.version(1).stores({
+db.version(${dbversion}).stores({
 ${reduce}
 });
 
@@ -340,14 +350,14 @@ ${reduce}
   extracted(pathDirGeneFile, text);
 }
 
-function handleVue(dbname, reduce, pathDirGeneFile) {
+function handleVue(dbname, dbversion, reduce, pathDirGeneFile) {
   const text =
     `'use strict';
 
 import Dexie from 'dexie';
 
 export const db = new Dexie('${dbname}');
-db.version(1).stores({
+db.version(${dbversion}).stores({
 ${reduce}
 });
 
@@ -364,12 +374,14 @@ function getDatabaseJsType() {
 /**
  * generator datasource.js file
  * @param dbname
+ * @param dbversion
  * @param pathDirEntity
  * @param pathDirGeneFile
  * @param type
  */
 function geneDbJs(
   dbname = null,
+  dbversion = 1,
   pathDirEntity = null,
   pathDirGeneFile = null,
   type = getDatabaseJsType().js,
@@ -400,10 +412,10 @@ function geneDbJs(
   }
   switch (type) {
     case getDatabaseJsType().js:
-      handleJs(dbname, reduce, pathDirGeneFile);
+      handleJs(dbname, dbversion, reduce, pathDirGeneFile);
       break;
     case getDatabaseJsType().vue:
-      handleVue(dbname, reduce, pathDirGeneFile);
+      handleVue(dbname, dbversion, reduce, pathDirGeneFile);
       break;
   }
 
@@ -417,19 +429,21 @@ function geneDbJs(
  * eg: entity/config.entity.json
  *
  * @param dbname
+ * @param dbversion{number}
  * @param pathDirEntity
  * @param pathDirGeneFile
  * @param type default type=js
  */
 function geneDexieAll(
   dbname = null,
+  dbversion = 1,
   pathDirEntity = null,
   pathDirGeneFile = null,
   type = getDatabaseJsType().vue,
 ) {
 
   let value = pathDirGeneFile;
-  geneDbJs(dbname, pathDirEntity, value, type);
+  geneDbJs(dbname, dbversion, pathDirEntity, value, type);
   geneUtilDexieJs(pathDirEntity, value);
 
 }
@@ -437,6 +451,9 @@ function geneDexieAll(
 module.exports = {
   geneDexieAll:
   geneDexieAll,
+
+  geneUtilDexieJs:
+  geneUtilDexieJs,
 
   getDatabaseJsType:
   getDatabaseJsType,
